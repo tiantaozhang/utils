@@ -79,6 +79,33 @@ func TestMap(t *testing.T) {
 		return
 	}
 	fmt.Println(JsonEncode(m))
+	//test mapP
+	if m.MapP("int/123") != nil{
+		t.Error("mapP err")
+		return
+	}
+	if m.MapP("map/mapint")!=nil{
+		t.Error("mapP err2")
+		return
+	}
+	if m.MapP("map/map")==nil{
+		t.Error("mapP err2")
+		return
+	}
+	fmt.Println(m.MapP("map/map"))
+	if m.StringP("/string/123")!="" {
+		t.Error("stringP err")
+		return
+	}
+	if m.StringP("/map/mapint")!="321" {
+		t.Error("stringP err2")
+		return
+	}
+	if m.StringP("/map/map/string")!="321" {
+		t.Error("stringP err3")
+		return
+	}
+	fmt.Println(m.StringP("/map/map/string"))
 }
 
 func TestJson(t *testing.T) {

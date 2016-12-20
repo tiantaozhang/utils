@@ -55,6 +55,60 @@ func (m Map) Map(key string) Map {
 	}
 }
 
+func (m Map) StringP(path string) string {
+	if val, err := m.ValP(path); err != nil {
+		return ""
+	} else {
+		return V2Str(val)
+	}
+}
+
+func (m Map) MapP(path string) Map {
+	if val, err := m.ValP(path); err != nil {
+		return nil
+	} else {
+		return V2Map(val)
+	}
+}
+
+func (m Map) Val(key string) interface{} {
+	if val, ok := m[key]; ok {
+		return val
+	} else {
+		return nil
+	}
+}
+
+func (m Map) ValP(path string) (interface{}, error) {
+	path = strings.TrimPrefix(path, "/")
+	paths := strings.Split(path, "/")
+	return m.valP(paths)
+}
+
+func (m Map) valP(paths []string) (interface{}, error) {
+	lens := len(paths)
+	var v interface{} = m
+	for i := 0; i < lens; i++ {
+		switch reflect.TypeOf(v).Kind() {
+		case reflect.Map:
+			tmp := V2Map(v)
+			if tmp == nil {
+				return nil, fmt.Errorf(fmt.Sprintf("invalid map in path(/%v)", strings.Join(paths[:i], "/")))
+			}
+			v = tmp.Val(paths[i])
+		default:
+			return nil,fmt.Errorf(fmt.Sprintf("invalid type(%v) in path(/%v)",
+				reflect.TypeOf(v).Kind(), strings.Join(paths[:i], "/")))
+		}
+	}
+	if v == nil {
+		return nil, fmt.Errorf(fmt.Sprintf(fmt.Sprintf(
+			"value not found in path(/%v)", strings.Join(paths, "/"),
+		)))
+	}
+	return v,nil
+}
+
 func (m Map) IsExit(key string) bool {
 	if _, ok := m[key]; ok {
 		return true
