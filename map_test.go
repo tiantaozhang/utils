@@ -80,32 +80,44 @@ func TestMap(t *testing.T) {
 	}
 	fmt.Println(JsonEncode(m))
 	//test mapP
-	if m.MapP("int/123") != nil{
+	if m.MapP("int/123") != nil {
 		t.Error("mapP err")
 		return
 	}
-	if m.MapP("map/mapint")!=nil{
+	if m.MapP("map/mapint") != nil {
 		t.Error("mapP err2")
 		return
 	}
-	if m.MapP("map/map")==nil{
+	if m.MapP("map/map") == nil {
 		t.Error("mapP err2")
 		return
 	}
 	fmt.Println(m.MapP("map/map"))
-	if m.StringP("/string/123")!="" {
+	if m.StringP("/string/123") != "" {
 		t.Error("stringP err")
 		return
 	}
-	if m.StringP("/map/mapint")!="321" {
+	if m.StringP("/map/mapint") != "321" {
 		t.Error("stringP err2")
 		return
 	}
-	if m.StringP("/map/map/string")!="321" {
+	if m.StringP("/map/map/string") != "321" {
 		t.Error("stringP err3")
 		return
 	}
 	fmt.Println(m.StringP("/map/map/string"))
+	m.Set("set", "set")
+	if "set" != m.String("set") {
+		t.Error("set err")
+		return
+	}
+	fmt.Println(m.String("set"))
+	m.Del("set")
+	if "" != m.String("set") {
+		t.Error("del err")
+		return
+	}
+	m.Del("")
 }
 
 func TestJson(t *testing.T) {
@@ -125,4 +137,15 @@ func TestJson(t *testing.T) {
 		"map": Map{"123": 321},
 	})
 	fmt.Println(str)
+}
+
+func TestM(t *testing.T)  {
+	m := Map{}
+	fmt.Println(m)
+	f(&m)
+	fmt.Println(m)
+}
+
+func f(m *Map) {
+	m.Set("1",1)
 }

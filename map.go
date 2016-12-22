@@ -97,7 +97,7 @@ func (m Map) valP(paths []string) (interface{}, error) {
 			}
 			v = tmp.Val(paths[i])
 		default:
-			return nil,fmt.Errorf(fmt.Sprintf("invalid type(%v) in path(/%v)",
+			return nil, fmt.Errorf(fmt.Sprintf("invalid type(%v) in path(/%v)",
 				reflect.TypeOf(v).Kind(), strings.Join(paths[:i], "/")))
 		}
 	}
@@ -106,7 +106,7 @@ func (m Map) valP(paths []string) (interface{}, error) {
 			"value not found in path(/%v)", strings.Join(paths, "/"),
 		)))
 	}
-	return v,nil
+	return v, nil
 }
 
 func (m Map) IsExit(key string) bool {
@@ -123,6 +123,14 @@ func (m Map) SetIfNotExit(key string, val interface{}) bool {
 	}
 	m[key] = val
 	return true
+}
+
+func (m Map) Set(key string, val interface{}) {
+	m[key] = val
+}
+
+func (m Map) Del(key string) {
+	delete(m, key)
 }
 
 func V2Int64(v interface{}) int64 {
