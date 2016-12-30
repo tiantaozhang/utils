@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 )
 
-func JsonEncode(v interface{}) string {
+// JSONEncode json encode
+func JSONEncode(v interface{}) string {
 	if v == nil {
 		return ""
 	}
@@ -15,11 +16,12 @@ func JsonEncode(v interface{}) string {
 	return string(b)
 }
 
-func JsonDecode(v []byte) Map {
+// JSONDecode json decode
+func JSONDecode(v []byte) Map {
 	if v == nil {
 		return nil
 	}
-	var m Map = make(Map)
+	var m  = make(Map)
 	if err := json.Unmarshal(v, &m); err != nil {
 		return nil
 	}

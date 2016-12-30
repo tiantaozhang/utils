@@ -7,8 +7,10 @@ import (
 	"strings"
 )
 
+// Map type map
 type Map map[string]interface{}
 
+// Int ...
 func (m Map) Int(key string) int64 {
 	if v, ok := m[key]; ok {
 		return V2Int64(v)
@@ -16,6 +18,7 @@ func (m Map) Int(key string) int64 {
 	return int64(0)
 }
 
+// Float ...
 func (m Map) Float(key string) float64 {
 	if v, ok := m[key]; ok {
 		return V2Float64(v)
@@ -23,62 +26,66 @@ func (m Map) Float(key string) float64 {
 	return float64(0)
 }
 
+// Uint ...
 func (m Map) Uint(key string) uint64 {
 	if v, ok := m[key]; ok {
 		return V2Uint64(v)
-	} else {
-		return 0
 	}
+	return 0
 }
 
+// String ...
 func (m Map) String(key string) string {
 	if v, ok := m[key]; ok {
 		return V2Str(v)
-	} else {
-		return ""
 	}
+	return ""
 }
 
+// Array ...
 func (m Map) Array(key string) []interface{} {
 	if v, ok := m[key]; ok {
 		return V2Array(v)
-	} else {
-		return nil
 	}
+	return nil
 }
 
+// Map ...
 func (m Map) Map(key string) Map {
 	if v, ok := m[key]; ok {
 		return V2Map(v)
-	} else {
-		return nil
 	}
+	return nil
 }
 
+// StringP ...
 func (m Map) StringP(path string) string {
-	if val, err := m.ValP(path); err != nil {
+	val, err := m.ValP(path)
+	if err != nil {
 		return ""
-	} else {
-		return V2Str(val)
 	}
+	return V2Str(val)
 }
 
+// MapP ...
 func (m Map) MapP(path string) Map {
-	if val, err := m.ValP(path); err != nil {
+	val, err := m.ValP(path)
+	if err != nil {
 		return nil
-	} else {
-		return V2Map(val)
 	}
+	return V2Map(val)
 }
 
+// Val ...
 func (m Map) Val(key string) interface{} {
 	if val, ok := m[key]; ok {
 		return val
-	} else {
-		return nil
 	}
+	return nil
+
 }
 
+// ValP ...
 func (m Map) ValP(path string) (interface{}, error) {
 	path = strings.TrimPrefix(path, "/")
 	paths := strings.Split(path, "/")
@@ -109,14 +116,15 @@ func (m Map) valP(paths []string) (interface{}, error) {
 	return v, nil
 }
 
+// IsExit ...
 func (m Map) IsExit(key string) bool {
 	if _, ok := m[key]; ok {
 		return true
-	} else {
-		return false
 	}
+	return false
 }
 
+// SetIfNotExit ...
 func (m Map) SetIfNotExit(key string, val interface{}) bool {
 	if m.IsExit(key) {
 		return false
@@ -125,23 +133,26 @@ func (m Map) SetIfNotExit(key string, val interface{}) bool {
 	return true
 }
 
+// Set ...
 func (m Map) Set(key string, val interface{}) {
 	m[key] = val
 }
 
+// Del ...
 func (m Map) Del(key string) {
 	delete(m, key)
 }
 
+// V2Int64 ...
 func V2Int64(v interface{}) int64 {
 	val, err := IntVal(v)
 	if err == nil {
 		return val
-	} else {
-		return int64(0)
 	}
+	return int64(0)
 }
 
+// IntVal ...
 func IntVal(v interface{}) (int64, error) {
 	if v == nil {
 		return 0, fmt.Errorf("arg value is null")
@@ -163,11 +174,11 @@ func IntVal(v interface{}) (int64, error) {
 	case reflect.Float32, reflect.Float64:
 		return int64(V2Float64(v)), nil
 	case reflect.String:
-		if fv, err := strconv.ParseInt(v.(string), 10, 64); err == nil {
+		fv, err := strconv.ParseInt(v.(string), 10, 64)
+		if err == nil {
 			return fv, nil
-		} else {
-			return 0, err
 		}
+		return 0, err
 	case reflect.Struct:
 		return 0, fmt.Errorf("incompactable kind(%v)", k.Kind())
 	default:
@@ -175,15 +186,16 @@ func IntVal(v interface{}) (int64, error) {
 	}
 }
 
+// V2Float64 ...
 func V2Float64(v interface{}) float64 {
 	val, err := FloatVal(v)
 	if err == nil {
 		return val
-	} else {
-		return 0
 	}
+	return 0
 }
 
+// FloatVal ...
 func FloatVal(v interface{}) (float64, error) {
 	if v == nil {
 		return 0, fmt.Errorf("arg value is null")
@@ -199,25 +211,26 @@ func FloatVal(v interface{}) (float64, error) {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		return float64(V2Int64(v)), nil
 	case reflect.String:
-		if fv, err := strconv.ParseFloat(v.(string), 64); err == nil {
+		fv, err := strconv.ParseFloat(v.(string), 64)
+		if err == nil {
 			return fv, nil
-		} else {
-			return 0, err
 		}
+		return 0, err
 	default:
 		return 0, fmt.Errorf("incompactable kind(%v)", k.Kind().String())
 	}
 }
 
+// V2Uint64 ...
 func V2Uint64(v interface{}) uint64 {
 	val, err := Uint64Val(v)
 	if err == nil {
 		return val
-	} else {
-		return 0
 	}
+	return 0
 }
 
+// Uint64Val ...
 func Uint64Val(v interface{}) (uint64, error) {
 	if v == nil {
 		return 0, fmt.Errorf("arg value is null")
@@ -239,16 +252,18 @@ func Uint64Val(v interface{}) (uint64, error) {
 	case reflect.Float32, reflect.Float64:
 		return uint64(V2Float64(v)), nil
 	case reflect.String:
-		if fv, err := strconv.ParseUint(v.(string), 10, 64); err == nil {
+		fv, err := strconv.ParseUint(v.(string), 10, 64);
+		if err == nil {
 			return fv, nil
-		} else {
-			return 0, err
 		}
+		return 0, err
+
 	default:
 		return 0, fmt.Errorf("incompactable kind(%v)", k.Kind().String())
 	}
 }
 
+// V2Str ...
 func V2Str(v interface{}) string {
 	if v == nil {
 		return ""
@@ -271,6 +286,7 @@ func V2Str(v interface{}) string {
 	return str
 }
 
+// V2Map ...
 func V2Map(v interface{}) Map {
 	if m, ok := v.(Map); ok {
 		return m
@@ -281,6 +297,7 @@ func V2Map(v interface{}) Map {
 	}
 }
 
+// V2Array ...
 func V2Array(v interface{}) []interface{} {
 	if vals, ok := v.([]interface{}); ok {
 		return vals

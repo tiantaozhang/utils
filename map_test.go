@@ -7,7 +7,7 @@ import (
 
 func TestMap(t *testing.T) {
 	str := `{"int":123,"string":"string","map":{"mapint":321,"map":{"string":"321"}},"array":["123","321"]}`
-	m := JsonDecode([]byte(str))
+	m := JSONDecode([]byte(str))
 	if m.IsExit("int") != true {
 		t.Error("isexit err")
 		return
@@ -78,7 +78,7 @@ func TestMap(t *testing.T) {
 		t.Error("setifnotexit err2")
 		return
 	}
-	fmt.Println(JsonEncode(m))
+	fmt.Println(JSONEncode(m))
 	//test mapP
 	if m.MapP("int/123") != nil {
 		t.Error("mapP err")
@@ -121,18 +121,18 @@ func TestMap(t *testing.T) {
 }
 
 func TestJson(t *testing.T) {
-	str := JsonEncode(nil)
+	str := JSONEncode(nil)
 	if str != "" {
 		t.Error("str err", str)
 		return
 	}
 	v := ""
-	str = JsonEncode(v)
+	str = JSONEncode(v)
 	if str != `""` {
 		t.Error("str err2", str, len(str))
 		return
 	}
-	str = JsonEncode(Map{
+	str = JSONEncode(Map{
 		"abc": "cba",
 		"map": Map{"123": 321},
 	})
